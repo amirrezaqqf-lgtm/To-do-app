@@ -97,6 +97,23 @@ form{position: relative;}
 .delete-button:hover svg{
     fill: #ff0019;
 }
+.edit-button {
+    padding: 3px;
+    background: none;
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    margin-right: 5px;
+}
+.edit-button svg {
+    transition: 200ms ease;
+    fill: var(--secondary-color);
+}
+.edit-button:hover svg {
+    fill: #4A9FFF;
+}
 .custom-checkbox{
     border: 2px solid var(--accent-color);
     border-radius: 70%;
@@ -117,16 +134,19 @@ input[type="checkbox"]:checked ~ .custom-checkbox  svg{
 }
 input[type="checkbox"]:checked ~ .todo-text{
     text-decoration: line-through;
-    color: var(--secondary-color)
+    color: var(--secondary-color);
+    opacity: 0.7;
+}
+input[type="checkbox"]:not(:checked) ~ .todo-text{
+    text-decoration: none;
+    opacity: 1;
 }
 input[type="checkbox"]{
     display: none;
 }
 @media(max-width: 500px){
-
     html{
-            font-size: 12pt;
-
+        font-size: 12pt;
     }
     #add-button{
         position: unset;
