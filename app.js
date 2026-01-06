@@ -1,14 +1,27 @@
-const todoForm = document.querySelector('form');
+const todoForm = document.getElementById('todo-form');
 const todoInput = document.getElementById('todo-input');
 const todoListUL = document.getElementById('todo-list');
+const addButton = document.getElementById('add-button');
+const cancelButton = document.getElementById('cancel-button');
 
 let allTodos = getTodos();
+let editingIndex = null;
+let isEditing = false;
+
 updateTodoList();
 
 todoForm.addEventListener('submit', function(e){
     e.preventDefault();
-    addTodo();
-})
+    if (isEditing) {
+        updateTodo();
+    } else {
+        addTodo();
+    }
+});
+
+cancelButton.addEventListener('click', function() {
+    cancelEdit();
+});
 
 function addTodo(){
     const todoText = todoInput.value.trim(); 
@@ -18,10 +31,30 @@ function addTodo(){
             completed: false
         }
         allTodos.push(todoObject);
-        savetodos();
+        saveTodos();
         updateTodoList();
         todoInput.value = "";
+        todoInput.focus();
     }
+}
+
+function updateTodo(){
+    const todoText = todoInput.value.trim(); 
+    if(todoText.length > 0){
+        allTodos[editingIndex].text = todoText;
+        saveTodos();
+        updateTodoList();
+        cancelEdit();
+    }
+}
+
+function cancelEdit() {
+    todoInput.value = "";
+    editingIndex = null;
+    isEditing = false;
+    cancelButton.style.display = "none";
+    todoInput.placeholder = "click here and write down your task";
+    todoInput.focus();
 }
 
 function updateTodoList(){
@@ -47,12 +80,12 @@ function createTodoItem(todo, todoIndex){
         <label for="${todoId}" class="todo-text">
             ${todoText}
         </label>
-        <button class="edit-button">
+        <button class="edit-button" title="Edit task">
             <svg fill="var(--secondary-color)" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px">
                 <path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/>
             </svg>
         </button>
-        <button class="delete-button">
+        <button class="delete-button" title="Delete task">
             <svg fill="var(--secondary-color)" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px">
                 <path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/>
             </svg>
@@ -75,7 +108,7 @@ function createTodoItem(todo, todoIndex){
     
     checkbox.addEventListener('change', function() {
         allTodos[todoIndex].completed = this.checked;
-        savetodos();
+        saveTodos();
     });
     
     return todoLI;
@@ -83,20 +116,20 @@ function createTodoItem(todo, todoIndex){
 
 function deleteTodoItem(todoIndex){
     allTodos = allTodos.filter((_, i) => i !== todoIndex);
-    savetodos();
+    saveTodos();
     updateTodoList();
 }
 
 function editTodoItem(todoIndex){
-    const newText = prompt("ویرایش تسک:", allTodos[todoIndex].text);
-    if(newText !== null && newText.trim() !== ""){
-        allTodos[todoIndex].text = newText.trim();
-        savetodos();
-        updateTodoList();
-    }
+    todoInput.value = allTodos[todoIndex].text;
+    editingIndex = todoIndex;
+    isEditing = true;
+    cancelButton.style.display = "block";
+    todoInput.placeholder = "Edit your task...";
+    todoInput.focus();
 }
 
-function savetodos(){
+function saveTodos(){
     const todoJson = JSON.stringify(allTodos);
     localStorage.setItem("todos", todoJson);
 }
