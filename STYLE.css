@@ -145,6 +145,19 @@ input[type="checkbox"]:not(:checked) ~ .todo-text{
 input[type="checkbox"]{
     display: none;
 }
+.edit-input {
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    border: none;
+    border-radius: 15px;
+    outline: none;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 15px;
+    font: inherit;
+    margin: 0;
+    display: block;
+}
 @media(max-width: 500px){
     html{
         font-size: 12pt;
